@@ -17,40 +17,39 @@ function getOrderForm() {
 }
 
 function getPupDistance(orderForm) {
-  console.log("getPupDistance start", orderForm);
-  const slas = orderForm.shippingData.logisticsInfo
+  const logisticsInfoSlas = orderForm.shippingData.logisticsInfo
     .map((logisticInfo) => {
       return logisticInfo.slas;
     })
     .flat();
 
-  const slasPUP = slas.filter((sla) => {
+  const slasPUP = logisticsInfoSlas.filter((sla) => {
     return sla.deliveryChannel === "pickup-in-point";
   });
   console.log("slasPUP", slasPUP);
 
-  const slasIds = [];
-  const slasAux = [];
+  const slas = [];
   slasPUP.forEach((sla) => {
-    if (!slasIds.includes(sla.id)) {
-      slasIds.push(sla.id);
-      slasAux.push(sla);
+    if (!slas.some((s) => s.id === sla.id)) {
+      slas.push({
+        id: sla.id,
+        value: sla,
+      });
     }
   });
 
-  console.log("slasIds", slasIds);
-  console.log("slasAux", slasAux);
+  console.log("slas", slas);
 
-  slasAux.forEach((sla, index) => {
-    const { pickupDistance } = sla;
+  slas.forEach((sla) => {
+    const { pickupDistance } = sla.value;
     console.log("pickupDistance", pickupDistance);
-    updatePupElements(slasIds[index],pickupDistance);
+    updatePupElements(sla.id, sla.value.pickupDistance);
   });
   console.log("getPupDistance end");
 }
 
 function updatePupElements(id, pickupDistance) {
-    //validar que exista el elemento
+  //validar que exista el elemento
   const parseId = id.replace(" ", "-").replace("(", "").replace(")", "");
   const pkpmodalPointsList = document.querySelector(".pkpmodal-points-list");
   const element = pkpmodalPointsList.querySelector("#" + parseId);
@@ -72,30 +71,6 @@ function updatePupElements(id, pickupDistance) {
 }
 
 /*
-R. Assis Bueno - Botafogo, Rio de Janeiro - RJ, 22280, Brasil
-"1_141125d"
-0.9423947334289551
-2.3011231422424316
-
-R. Fonte da Saudade - Lagoa, Rio de Janeiro - RJ, 22471-210, Brasil
-pickupPointId: "1_141125d"
-2.2600743770599365
-3.8657522201538086
-*/
-
-/*
-Ponemos R. Assis Bueno - Botafogo, Rio de Janeiro - RJ, 22280, Brasil
--> Trae bien su distancia en el front y en el orderForm
-
-Ponemos R. Fonte da Saudade - Lagoa, Rio de Janeiro - RJ, 22471-210, Brasil
--> Trae mal su distancia en el front y pero bien en el orderForm
-
-Ponemos nuevamente R. Assis Bueno - Botafogo, Rio de Janeiro - RJ, 22280, Brasil
--> Trae mal su distancia en el front y mal en el orderForm, deja las distancias del anterior PUP
-
-
-Dada una direccion -> devolveme los pups cercanos
-
 
 Br. Metropolis, Barrios Unidos, Bogotá, Colombia -> 0,4
 
