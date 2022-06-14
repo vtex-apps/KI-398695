@@ -1,5 +1,6 @@
 $(document).ready(function () {
-  const pkpmodalSearch = document.querySelector("#pkpmodal-search");
+  addSeachObserver();
+  /*const pkpmodalSearch = document.querySelector("#pkpmodal-search");
   const input = pkpmodalSearch.querySelector("input");
 
   input.addEventListener("change", (event) => {
@@ -7,7 +8,7 @@ $(document).ready(function () {
     setTimeout(() => {
       getOrderForm();
     }, 100);
-  });
+  });*/
 });
 
 function getOrderForm() {
@@ -68,6 +69,49 @@ function updatePupElements(id, pickupDistance) {
   const newDistance = parsePickupDistance + " " + unit;
   console.log("newDistance", newDistance);
   distanceElement.textContent = newDistance;
+}
+
+function addModalObserver() {
+  const observerPupModal = new MutationObserver((mutations, obsPM) => {
+    const pupModal = document.querySelector("#pup-modal");
+
+    if (document.contains(pupModal)) {
+      console.log('se abrio la modal')
+      addSeachObserver();
+
+      obsPM.disconnect();
+
+      return;
+    }
+  });
+
+  observerPupModal.observe(document, {
+    childList: true,
+    subtree: true,
+  });
+}
+function addSeachObserver() {
+  const observerSearch = new MutationObserver((mutations, obsS) => {
+    const pkpmodalSearch = document.querySelector("#pkpmodal-search");
+
+    if (document.contains(pkpmodalSearch)) {
+      const input = pkpmodalSearch.querySelector("input");
+
+      input.addEventListener("change", (event) => {
+        console.log("change", event.target.value);
+        setTimeout(() => {
+          getOrderForm();
+        }, 100);
+      });
+
+      obsS.disconnect();
+    }
+  });
+
+  observerSearch.observe(document, {
+    childList: true,
+    subtree: true,
+  });
 }
 
 /*
