@@ -82,17 +82,19 @@ function updatePupElements(id, pickupDistance) {
   //validar que exista el elemento
   const parseId = id.replace(" ", "-").replace("(", "").replace(")", "");
   const pkpmodalPointsList = document.querySelector(".pkpmodal-points-list");
-  const element = pkpmodalPointsList.querySelector("#" + parseId);
-  const distanceElement = element.querySelector(
-      ".pkpmodal-pickup-point-distance"
-  );
-  const actualDistance = distanceElement.textContent;
-  const unit = actualDistance.split(" ")[1];
-  const parsePickupDistance = parseFloat(pickupDistance)
-      .toFixed(1)
-      .replace(".", ",");
-  const newDistance = parsePickupDistance + " " + unit;
-  distanceElement.textContent = newDistance;
+  if(typeof(pkpmodalPointsList) && pkpmodalPointsList != null){
+    const element = pkpmodalPointsList.querySelector("#" + parseId);
+    const distanceElement = element.querySelector(
+        ".pkpmodal-pickup-point-distance"
+    );
+    const actualDistance = distanceElement.textContent;
+    const unit = actualDistance.split(" ")[1];
+    const parsePickupDistance = parseFloat(pickupDistance)
+        .toFixed(1)
+        .replace(".", ",");
+    const newDistance = parsePickupDistance + " " + unit;
+    distanceElement.textContent = newDistance;
+  }
 }
 
 function addSectionObserver(id, pickupDistance) {
